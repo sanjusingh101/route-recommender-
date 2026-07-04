@@ -7,8 +7,6 @@ const { notFound, errorHandler } = require('./middleware/errorHandler');
 const authRoutes = require('./routes/authRoutes');
 const routeRoutes = require('./routes/routeRoutes');
 
-connectDB();
-
 const app = express();
 
 app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
@@ -23,5 +21,15 @@ app.use('/api/routes', routeRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// FIX: ensure DB connects before server starts (required for Render)
+connectDB()
+  .then(() => {
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log("MongoDB connection error:", err);
+  });
