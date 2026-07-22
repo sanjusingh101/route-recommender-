@@ -9,7 +9,10 @@ const routeRoutes = require('./routes/routeRoutes');
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json());
 app.use(morgan('dev'));
 
@@ -26,9 +29,9 @@ connectDB()
   .then(() => {
     const PORT = process.env.PORT || 5000;
 
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+    app.listen(5000, "0.0.0.0", () => {
+  console.log("Server running on port 5000");
+});
   })
   .catch((err) => {
     console.log("MongoDB connection error:", err);
